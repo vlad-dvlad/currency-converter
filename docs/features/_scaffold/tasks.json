@@ -1,0 +1,63 @@
+{
+  "slug": "_scaffold",
+  "tasks": [
+    {
+      "id": "S1",
+      "title": "Create the Next.js project, the src/ module folders and a placeholder page",
+      "layer": "scaffold",
+      "deps": [],
+      "acs": [],
+      "dod": "Skeleton smoke test, build + boot part: `npm run build` succeeds, and after `npm start` the page at / answers HTTP 200",
+      "files_hint": [
+        "package.json",
+        "package-lock.json",
+        "tsconfig.json",
+        "next.config.ts",
+        "postcss.config.mjs",
+        ".gitignore",
+        "src/app/layout.tsx",
+        "src/app/page.tsx",
+        "src/app/globals.css",
+        "src/domain/.gitkeep",
+        "src/server/.gitkeep",
+        "src/ui/.gitkeep"
+      ]
+    },
+    {
+      "id": "S2",
+      "title": "Wire Vitest with Testing Library, jsdom and msw, and add a page smoke test",
+      "layer": "scaffold",
+      "deps": ["S1"],
+      "acs": [],
+      "dod": "Skeleton smoke test, test part: `npm test` runs green, and the suite renders the placeholder page",
+      "files_hint": ["vitest.config.mts", "src/app/page.test.tsx"]
+    },
+    {
+      "id": "S3",
+      "title": "Set up ESLint 9, Prettier and the typecheck script",
+      "layer": "scaffold",
+      "deps": ["S1"],
+      "acs": [],
+      "dod": "`npm run lint` and `npm run typecheck` pass on the skeleton, and the skeleton smoke test stays green",
+      "files_hint": ["eslint.config.mjs", ".prettierrc.json"]
+    },
+    {
+      "id": "S4",
+      "title": "Add the GitHub Actions workflow running build, test, lint and typecheck",
+      "layer": "scaffold",
+      "deps": ["S2", "S3"],
+      "acs": [],
+      "dod": "The workflow is valid YAML, its commands match the map's machine keys, and each one passes locally as part of the skeleton smoke test",
+      "files_hint": [".github/workflows/ci.yml"]
+    },
+    {
+      "id": "S5",
+      "title": "Write CLAUDE.md from the chosen conventions",
+      "layer": "scaffold",
+      "deps": ["S1"],
+      "acs": [],
+      "dod": "CLAUDE.md reflects the conventions in docs/architecture-map.md and lists the commands the skeleton smoke test ran",
+      "files_hint": ["CLAUDE.md"]
+    }
+  ]
+}
