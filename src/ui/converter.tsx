@@ -10,7 +10,9 @@ import {
   type CurrencyPair,
   type PairField,
 } from "@/domain/currency";
+import { formatRate, formatRateDate } from "@/domain/format";
 import { messages } from "./messages";
+import { useRate, type RateState } from "./use-rate";
 
 const CONTROL =
   "rounded border border-gray-400 px-3 py-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700";
@@ -19,6 +21,7 @@ export function Converter() {
   const [amountText, setAmountText] = useState("");
   const [pair, setPair] = useState<CurrencyPair>(DEFAULT_PAIR);
   const amountId = useId();
+  const rate = useRate(pair);
 
   const choose = (field: PairField) => (currency: Currency) =>
     setPair((current) => chooseCurrency(current, field, currency));
@@ -47,7 +50,22 @@ export function Converter() {
         </button>
         <CurrencyField label={messages.quoteLabel} value={pair.quote} onChoose={choose("quote")} />
       </div>
+
+      <div role="status" className="flex flex-col gap-1">
+        <RateLine state={rate} />
+      </div>
     </div>
+  );
+}
+
+function RateLine({ state }: { state: RateState }) {
+  if (state.status === "pending") return <p>{messages.ratePending}</p>;
+  if (state.status === "unavailable") return <p>{messages.rateUnavailable}</p>;
+  return (
+    <>
+      <p>{formatRate(state.rate)}</p>
+      <p>{formatRateDate(state.rate.date)}</p>
+    </>
   );
 }
 

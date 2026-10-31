@@ -9,8 +9,8 @@ files_hint: ["src/ui/converter.tsx", "src/ui/converter.test.tsx"]
 owner: "Vlad"
 estimate: "M"
 context_budget: "M"
-status: "todo"
-step: ""
+status: "done"
+step: "COMMIT"
 ---
 
 # T13 — Show the rate, rate date, dash and unavailable message on the screen

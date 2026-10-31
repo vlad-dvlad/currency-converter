@@ -252,7 +252,7 @@
         "src/ui/converter.test.tsx"
       ],
       "file": "docs/features/converter/tasks/t13-rate-states-on-screen.md",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "T14",
