@@ -9,8 +9,8 @@ files_hint: ["CLAUDE.md", "docs/architecture-map.md", "docs/features/converter/_
 owner: "Vlad"
 estimate: "S"
 context_budget: "M"
-status: "todo"
-step: ""
+status: "done"
+step: "COMMIT"
 ---
 
 # T18 — Update the project docs and write the owner's finish-line checklist
