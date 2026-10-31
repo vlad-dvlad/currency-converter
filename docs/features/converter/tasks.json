@@ -319,7 +319,7 @@
         "src/domain/worked-examples.test.ts"
       ],
       "file": "docs/features/converter/tasks/t16-worked-examples.md",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "T17",

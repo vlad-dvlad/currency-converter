@@ -9,8 +9,8 @@ files_hint: ["src/domain/worked-examples.test.ts"]
 owner: "Vlad"
 estimate: "S"
 context_budget: "M"
-status: "todo"
-step: ""
+status: "done"
+step: "COMMIT"
 ---
 
 # T16 — Check the worked examples from typed text to displayed string
