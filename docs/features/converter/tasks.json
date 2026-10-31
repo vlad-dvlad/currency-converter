@@ -184,7 +184,7 @@
         "src/ui/rates-api.test.ts"
       ],
       "file": "docs/features/converter/tasks/t10-browser-rates-client.md",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "T11",
