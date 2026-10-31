@@ -203,7 +203,7 @@
         "src/ui/use-rate.test.tsx"
       ],
       "file": "docs/features/converter/tasks/t11-use-rate-hook.md",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "T12",

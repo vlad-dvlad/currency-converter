@@ -18,7 +18,7 @@
 | T8 | Request the rate with the time limit and cache options, and drop untrusted answers | infra | Vlad | M | T7 | done | COMMIT |
 | T9 | Answer GET /api/rates with the rate or the error envelope | ports | Vlad | S | T1, T8 | done | COMMIT |
 | T10 | Request the rate from the browser and validate the reply | ui | Vlad | S | T1 | done | COMMIT |
-| T11 | Hold the rate state tied to the selected pair | ui | Vlad | M | T10 | todo | — |
+| T11 | Hold the rate state tied to the selected pair | ui | Vlad | M | T10 | done | COMMIT |
 | T12 | Build the converter form with its fields, swap control and Ukrainian text | ui | Vlad | M | T1 | todo | — |
 | T13 | Show the rate, rate date, dash and unavailable message on the screen | ui | Vlad | M | T4, T11, T12 | todo | — |
 | T14 | Derive and show the reference result, the label and the amount message | ui | Vlad | M | T2, T3, T4, T13 | todo | — |

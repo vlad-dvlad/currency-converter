@@ -9,8 +9,8 @@ files_hint: ["src/ui/use-rate.ts", "src/ui/use-rate.test.tsx"]
 owner: "Vlad"
 estimate: "M"
 context_budget: "M"
-status: "todo"
-step: ""
+status: "done"
+step: "COMMIT"
 ---
 
 # T11 — Hold the rate state tied to the selected pair
