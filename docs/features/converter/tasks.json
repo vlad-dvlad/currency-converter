@@ -109,7 +109,7 @@
         ".github/workflows/ci.yml"
       ],
       "file": "docs/features/converter/tasks/t06-quality-gates-in-ci.md",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "T7",
