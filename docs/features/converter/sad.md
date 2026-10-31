@@ -236,6 +236,310 @@ sequenceDiagram
     end
 ```
 
+### Flow 4: type an amount and read the outcome
+
+US-01, US-04: AC-02, AC-03, AC-04, AC-10, AC-11, AC-13c. The service takes no part: no typing reaches it.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor U as user
+    participant UI as ui
+    Note over U,UI: Precondition: a pair is selected and its rate has not arrived, is ready or is unavailable
+    U->>UI: Types or edits the amount
+    UI->>UI: Keeps the text in the field as typed and reads it
+    Note over UI: 12, reads as 12 and 1,5 reads as 1.5 and ,5 reads as 0,5 and 007 reads as 7
+    alt The field is empty or holds a lone separator
+        UI-->>U: Shows no result and no amount message
+    else The text is rejected: a sign, letters, two separators, spaces, over two decimals or over 12 whole digits
+        UI-->>U: Shows one general amount message and no result
+    else The amount is valid and the rate has not arrived or is unavailable
+        UI-->>U: Shows no result, and the dash or the unavailable message stays
+    else The amount is valid and the rate is ready
+        UI->>UI: Multiplies exactly and rounds to two decimals with a half going up
+        alt The amount is zero
+            UI-->>U: Shows the result as 0,00 with the rate, rate date and label
+        else A non-zero amount rounds to zero
+            UI-->>U: Shows that the result is below 0,01, with the rate, rate date and label
+        else Any other amount
+            UI-->>U: Shows the result, such as 4 543,60 UAH, with the rate, rate date and label
+        end
+    end
+    Note over U,UI: Postcondition: no rate request was made, and the rate state is unchanged
+```
+
+### Flow 5: see what the result rests on
+
+US-02: AC-05, AC-06. The rate source's latest rate for the pair is older than today, as in AC-06.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor U as user
+    participant UI as ui
+    participant S as service
+    participant D as data-store
+    participant X as external-system
+    Note over U,X: Precondition: the latest rate for the selected pair is dated 29 October 2026 and today is later
+    UI->>S: Requests the rate for the pair
+    S->>D: Asks for the answer for this pair
+    alt Nothing is stored for this pair
+        D->>X: Fetches the rate for this pair
+        X-->>D: Answers with the rate and the date it states for that rate
+        Note over S,D: persists stored answer for this pair (framework cache, no app schema)
+    else An answer is stored for this pair
+        Note over S,D: reuses the stored answer with its original rate date
+    end
+    D-->>S: Answer
+    S->>S: Validates the answer, turns the rate into a decimal string once and keeps the date as stated
+    S-->>UI: Returns the rate string, both currencies and the rate date
+    UI->>UI: Validates the reply and writes the rate with a decimal comma and every published digit
+    UI->>UI: Rearranges the date parts to DD.MM.YYYY, with no time zone involved
+    UI-->>U: Shows 1 USD = 45,436 UAH and 29.10.2026, never today's date
+    opt The amount is valid
+        UI-->>U: Also shows the result and the reference-value label beside them
+    end
+    Note over U,X: Postcondition: the date on screen is the date stated for this rate
+```
+
+### Flow 6: choose or swap currencies
+
+US-03: AC-07, AC-08, AC-09. Flow 5 shows how the service obtains the rate, and flow 7 shows the failure.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor U as user
+    participant UI as ui
+    participant S as service
+    Note over U,UI: Precondition: each field offers exactly UAH, USD, EUR, GBP and PLN, and the app opens on USD to UAH with an empty amount
+    alt The owner chooses a currency the other field does not hold
+        U->>UI: Chooses the currency
+        UI->>UI: Changes that field only
+    else The owner chooses the currency the other field holds
+        U->>UI: Chooses the currency
+        UI->>UI: Swaps the two fields, with no error
+    else The owner uses the swap control
+        U->>UI: Uses the swap control
+        UI->>UI: Reverses the pair
+    end
+    UI-->>U: Keeps the amount, removes the old result, rate and rate date and shows a dash
+    UI->>S: Requests the rate for the new pair
+    S-->>UI: Returns the rate published for this direction
+    UI-->>U: Shows that rate and its rate date, and the result if the amount is valid
+    Note over U,S: Postcondition: the pair never holds one currency twice, and no rate is an inverted copy of another
+```
+
+### Flow 7: the rate is unavailable, and what brings a new attempt
+
+US-05: AC-12, AC-13c. A stored answer counts as usable, even past the refresh interval, so this flow starts with nothing stored (flow 3 shows the stored cases).
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor U as user
+    participant UI as ui
+    participant S as service
+    participant D as data-store
+    participant X as external-system
+    Note over U,X: Precondition: nothing is stored for the selected pair and the screen shows a dash
+    UI->>S: Requests the rate for the pair
+    S->>D: Asks for the answer for this pair
+    D->>X: Fetches the rate within the five-second time limit
+    alt The source fails or exceeds the time limit
+        X-->>D: Fails or gives no answer in time
+        D-->>S: No answer
+        S->>S: Writes the reason to the server console
+        S-->>UI: Returns the stable failure code and fixed text
+    else The answer cannot be trusted
+        X-->>D: Answers with an unexpected form, a bad rate, another pair or a bad rate date
+        Note over S,D: persists stored answer until the service drops it (framework cache, no app schema)
+        D-->>S: Answer
+        S->>S: Rejects the answer and writes the reason to the server console
+        S->>D: Drops the stored answer for this pair
+        S-->>UI: Returns the stable failure code and fixed text
+    else The answer is valid but the reply to the browser fails or is unexpected
+        X-->>D: Answers normally
+        Note over S,D: persists stored answer for this pair (framework cache, no app schema)
+        D-->>S: Answer
+        S-->>UI: Reply fails or does not pass browser validation
+        UI->>UI: Counts it as the rate being unavailable
+    end
+    UI-->>U: Shows the unavailable message and no result, with no text from the rate source
+    Note over U,UI: The amount and currencies stay, and a rejected amount keeps its explanation
+    alt The owner types an amount
+        U->>UI: Changes the amount
+        UI-->>U: Updates only the amount state, with no new attempt
+    else The owner changes the pair or uses the swap control
+        U->>UI: Changes a field, changes it back or swaps
+        UI-->>U: Shows a dash in place of the unavailable message
+        UI->>S: Makes a new attempt for the selected pair
+    else The owner reloads the page
+        U->>UI: Reloads the page
+        UI-->>U: Starts over with USD to UAH, an empty amount and a dash
+        UI->>S: Makes a new attempt for USD to UAH
+    end
+    Note over U,X: Postcondition: no automatic retry or timer runs, and only a pair change or a reload makes a new attempt
+```
+
+### Flow 8: refuse an unsupported pair
+
+Spec §6.1 abuse case, with no acceptance criterion of its own. The screen cannot send such a pair, because its lists are fixed and AC-08 keeps the two currencies different, so the initiator is a direct call to the endpoint on the owner's machine.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant C as client
+    participant S as service
+    participant X as external-system
+    Note over C,S: Precondition: a direct call names a currency pair for the rate
+    C->>S: Requests the rate for the named pair
+    S->>S: Checks both currencies against the supported list and against each other
+    alt A currency is unsupported, missing or identical to the other
+        S->>S: Writes the reason to the server console
+        S-->>C: Returns the invalid_pair code and fixed text
+    else Both currencies are supported and different
+        S->>X: Continues as in flow 5, sending only the pair
+        X-->>S: Answer
+        S-->>C: Returns the rate, or the failure as in flow 7
+    end
+    Note over C,X: Postcondition: a refused pair never reaches the rate source
+```
+
+### Flow 9: operate the screen by keyboard
+
+US-06: AC-14. The controls are native form elements, so what the keys do comes from the browser. This flow shows the path, and the visible focus and labels stay a component test and the owner's keyboard walk (AC-16).
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor U as user
+    participant UI as ui
+    participant S as service
+    Note over U,UI: Precondition: the owner uses only the keyboard, and every field has a Ukrainian label
+    loop Until the owner reaches the control they want
+        U->>UI: Presses Tab or Shift+Tab
+        UI-->>U: Moves focus to the next control and shows the focus
+    end
+    alt Focus is on the amount
+        U->>UI: Types an amount
+        UI-->>U: Answers as in flow 4
+    else Focus is on a currency field
+        U->>UI: Changes the selected value with the keyboard
+        UI->>UI: Counts every change of value as a choice, swapping the fields if needed
+        UI->>S: Requests the rate for the new pair, as in flow 6
+        UI-->>U: Shows a dash until the rate arrives
+    else Focus is on the swap control
+        U->>UI: Presses Enter or Space
+        UI->>S: Requests the rate for the reversed pair, as in flow 6
+        UI-->>U: Shows a dash until the rate arrives
+    end
+    Note over U,S: Postcondition: every control was reached and operated, and currency codes stayed as UAH, USD, EUR, GBP and PLN
+```
+
+### Flow 10: reach the app only from the owner's machine
+
+US-07: AC-15, ADR-0005. Here the client is another device on the same network.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor U as user
+    participant UI as ui
+    participant C as client
+    participant S as service
+    Note over U,S: Precondition: a documented run command started the app, for development or production, bound to the loopback address
+    alt The owner opens the app on their own machine
+        U->>UI: Opens the app in a browser at the loopback address
+        UI->>S: Loads the page over loopback
+        S-->>UI: Serves the page, with no sign-in or key
+        UI-->>U: Shows the screen
+    else Another device on the same network tries to open it
+        C-xS: Tries to connect through the machine's network address
+        Note over C,S: The operating system refuses the connection, so the app never sees it and writes nothing
+    end
+    Note over U,S: Postcondition: only the owner's machine reaches the app, and no sign-in or key exists
+```
+
+### Flow 11: confirm the finish line
+
+US-08: AC-16, spec §6, spec §7. This is a review process around the app, not a request inside it, so it runs once per review.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor U as user
+    participant UI as ui
+    participant CI as external-system (CI)
+    participant R as external-system (rate source)
+    Note over U,R: Precondition: the feature is ready for the owner's review, and the worked examples were calculated ahead of the code
+    U->>CI: Submits the final change
+    CI->>CI: Runs the build, tests, lint, type check and format check
+    CI->>CI: Measures branch coverage of the money logic
+    alt A gate fails, a worked example differs or coverage is below 100 percent
+        CI-->>U: Fails the run, so the feature is not finished
+    else All gates pass and coverage is full
+        CI-->>U: Passes the run
+        U->>UI: Reads one pair in both directions on the running app
+        U->>R: Reads the same pair in both directions from the rate source
+        U->>UI: Walks the whole screen by keyboard, as in flow 9
+        U->>UI: Tries to open the app from another device and fails, as in flow 10
+        U->>U: Reads the change and completes the security review in spec section 6.1
+        alt A manual check fails
+            U->>U: Counts the feature as not finished
+        else All manual checks pass
+            U->>U: Counts the feature as finished
+        end
+    end
+    Note over U,R: Postcondition: the feature counts as finished only when every gate and manual check passed
+```
+
+### Coverage of spec §4 and §5
+
+Every user story has at least one flow, and every acceptance criterion is shown by a flow or a branch. None needed a non-runtime N/A.
+
+| User story | Flows |
+|---|---|
+| US-01 Convert an amount while typing | 1, 4 |
+| US-02 See what the result rests on | 1, 5 |
+| US-03 Choose and swap currencies | 2, 6 |
+| US-04 Understand a rejected amount | 4 |
+| US-05 Never see a misleading result | 2, 3, 7 |
+| US-06 Operate the screen by keyboard | 9 |
+| US-07 Keep the app on my machine | 10 |
+| US-08 Have a checkable finish line | 11 |
+
+| Acceptance criterion | Shown by |
+|---|---|
+| AC-01 | Flow 1, and the last result branch of flow 4 |
+| AC-02 | Flow 1, and flow 4, which has no service participant |
+| AC-03 | Flow 1, and the ready-rate branch of flow 4 |
+| AC-04 | Branch of flow 4: a non-zero amount rounds to zero |
+| AC-05 | Flows 1 and 5 |
+| AC-06 | Flow 5 |
+| AC-07 | Flow 1, and the precondition of flow 6 |
+| AC-08 | Branch of flow 6: the currency the other field holds |
+| AC-09 | Flow 2, and the swap control branch of flow 6 |
+| AC-10 | Branch of flow 4: rejected text |
+| AC-11 | Flow 4: the reading note, the empty branch and the zero branch |
+| AC-12 | Flows 2, 3 and 7 |
+| AC-13 | Flows 2 and 6 |
+| AC-13b | Flow 2 |
+| AC-13c | Flows 1, 2, 4 and 7, which together reach the nine table cells |
+| AC-14 | Flow 9 |
+| AC-15 | Flow 10 |
+| AC-16 | Flow 11 |
+
+Flow 8 covers the spec §6.1 refused currency, and flow 3 covers the spec §6 refresh.
+
+### Flags from the runtime view
+
+- **Participant for `design` to reconcile:** flow 11 needs continuous integration, which §5 does not declare because it is not part of the running system. Flow 11 draws it as an external system.
+- **Participant naming:** flows 1 to 3 came from `design` and keep their concrete names, while flows 4 to 11 use the generic vocabulary, written without angle brackets so the labels cannot be read as HTML.
+- **Logging:** flow 8 writes a console line for a refused pair, following the §8 rule of one line per failure the route answers. The reasons listed in §7 do not name this case.
+- **For `data-model`:** the only persist step is the framework's stored answer in flows 5 and 7. No flow adds an application entity, column or index.
+- **ADRs:** no new decision needs one.
+
 ## 7. Deployment view
 
 One Node process runs on the owner's machine, bound to `127.0.0.1` on port 3000 and started with `npm run dev`, or with `npm run build` and then `npm start`. There are no replicas, no worker and no public deployment (spec §3). The `fetch` cache lives under `.next/cache`, and deleting it loses nothing except stored rates (repo ADR-0003).
