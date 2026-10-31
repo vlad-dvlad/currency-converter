@@ -9,8 +9,8 @@ files_hint: ["src/server/rate-source.ts", "src/server/rate-source.test.ts"]
 owner: "Vlad"
 estimate: "S"
 context_budget: "M"
-status: "todo"
-step: ""
+status: "done"
+step: "COMMIT"
 ---
 
 # T7 — Validate the rate source's answer into a rate, rejecting every untrusted form

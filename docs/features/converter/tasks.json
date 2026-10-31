@@ -128,7 +128,7 @@
         "src/server/rate-source.test.ts"
       ],
       "file": "docs/features/converter/tasks/t07-validate-rate-source-answer.md",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "T8",
