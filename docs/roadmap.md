@@ -20,7 +20,7 @@ The owner runs a local one-screen browser app that converts an amount between tw
 | # | Step | Source | Size | Status |
 |---|---|---|:---:|---|
 | 1 | Project skeleton — the owner can build, boot, test and lint an empty app | `docs/architecture-map.md` §Module inventory | S | idea |
-| 2 | Convert an amount at the daily rate — the owner enters an amount, picks two currencies, and sees the exact result with its rate date | `docs/idea-brief.md` §7. Recommendation | M | idea |
+| 2 | Convert an amount at the daily rate — the owner enters an amount, picks two currencies, and sees the exact result with its rate date | `docs/idea-brief.md` §7. Recommendation | M | building |
 | 3 | Clear loading and error states — the owner sees what is happening when rates are slow or cannot be loaded | `docs/idea-brief.md` §6. Risks | S | idea |
 | 4 | UI and UX polish to the owner's bar → see [Not yet specified](#not-yet-specified) | `docs/idea-brief.md` §2. Problem | fog | idea |
 
