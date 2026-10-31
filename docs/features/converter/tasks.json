@@ -90,7 +90,7 @@
         "src/app/run-scripts.test.ts"
       ],
       "file": "docs/features/converter/tasks/t05-loopback-run-commands.md",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "T6",
