@@ -227,7 +227,7 @@
         "package-lock.json"
       ],
       "file": "docs/features/converter/tasks/t12-converter-form.md",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "T13",
