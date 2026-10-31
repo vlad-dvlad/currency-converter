@@ -1,6 +1,7 @@
 /** All Ukrainian text on the screen. Currency codes stay as they are. */
 export const messages = {
   heading: "Конвертер валют",
+  pageDescription: "Перерахунок сум між валютами за щоденним довідковим курсом",
   amountLabel: "Сума",
   baseLabel: "З валюти",
   quoteLabel: "У валюту",

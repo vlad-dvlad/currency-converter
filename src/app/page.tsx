@@ -1,7 +1,9 @@
+import { Converter } from "@/ui/converter";
+
 export default function Home() {
   return (
-    <main className="flex min-h-screen items-center justify-center">
-      <h1 className="text-2xl font-semibold">Currency converter</h1>
+    <main className="flex min-h-screen items-center justify-center p-4">
+      <Converter />
     </main>
   );
 }

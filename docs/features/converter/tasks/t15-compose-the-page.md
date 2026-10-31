@@ -9,8 +9,8 @@ files_hint: ["src/app/page.tsx", "src/app/page.test.tsx", "src/app/layout.tsx"]
 owner: "Vlad"
 estimate: "S"
 context_budget: "S"
-status: "todo"
-step: ""
+status: "done"
+step: "COMMIT"
 ---
 
 # T15 — Render the converter from the static page and set the document language

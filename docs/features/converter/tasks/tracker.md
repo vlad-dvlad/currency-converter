@@ -22,7 +22,7 @@
 | T12 | Build the converter form with its fields, swap control and Ukrainian text | ui | Vlad | M | T1 | done | COMMIT |
 | T13 | Show the rate, rate date, dash and unavailable message on the screen | ui | Vlad | M | T4, T11, T12 | done | COMMIT |
 | T14 | Derive and show the reference result, the label and the amount message | ui | Vlad | M | T2, T3, T4, T13 | done | COMMIT |
-| T15 | Render the converter from the static page and set the document language | wiring | Vlad | S | T14 | todo | — |
+| T15 | Render the converter from the static page and set the document language | wiring | Vlad | S | T14 | done | COMMIT |
 | T16 | Check the worked examples from typed text to displayed string | tests | Vlad | S | T2, T3, T4 | done | COMMIT |
 | T17 | Probe the stored-answer behaviour on the production build | tests | Vlad | S | T9 | todo | — |
 | T18 | Update the project docs and write the owner's finish-line checklist | docs | Vlad | S | T5, T6, T15, T16, T17 | todo | — |
