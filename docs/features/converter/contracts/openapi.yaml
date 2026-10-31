@@ -1,0 +1,178 @@
+# Derived contract for the converter feature. Do not edit by hand ahead of its sources:
+#   fields + constraints  <- docs/features/converter/data-model.md
+#   error responses       <- docs/features/converter/sad.md section 6 (flows 2, 3, 7, 8) and section 8
+#   operation + outcomes  <- docs/features/converter/spec.md sections 4, 5 and 6.1
+# Deviations from the pipeline's defaults are listed in api-sync-report.md.
+openapi: 3.1.0
+
+info:
+  title: Currency converter rates API
+  version: 0.1.0
+  description: |
+    The owner converts amounts on one local screen, always beside the daily reference rate and
+    rate date the result rests on. This API is the only way the browser reaches the app's server
+    side. It passes on the daily reference rate for one currency pair, and it keeps untrusted
+    answers and text from the rate source out of the browser. The amount never reaches it.
+
+servers:
+  - url: http://127.0.0.1:3000
+    description: The owner's machine, reachable only over loopback (feature ADR-0005)
+
+# No accounts, sign-in or keys. Access is limited by the loopback binding (feature ADR-0005).
+security: []
+
+tags:
+  - name: rates
+    description: Daily reference rates for currency pairs
+
+paths:
+  /api/rates:
+    get:
+      tags: [rates]
+      summary: Get the daily reference rate for a currency pair
+      description: |
+        Answers with one daily reference rate and its rate date for the requested currency pair.
+        A stored answer counts as usable even past its refresh interval, always with its true rate
+        date. Each direction of a pair is a rate of its own, never an inverted copy.
+
+        The currency pair is checked first: a refused pair never reaches the rate source.
+      operationId: getRate
+      security: []
+      parameters:
+        - in: query
+          name: base
+          required: true
+          description: The source currency of the pair. Must differ from `quote`.
+          schema: { $ref: "#/components/schemas/SupportedCurrency" }
+          example: USD
+        - in: query
+          name: quote
+          required: true
+          description: The target currency of the pair. Must differ from `base`.
+          schema: { $ref: "#/components/schemas/SupportedCurrency" }
+          example: UAH
+      responses:
+        "200":
+          description: A usable daily reference rate for exactly the requested currency pair.
+          headers:
+            Cache-Control: { $ref: "#/components/headers/NoStore" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/DailyReferenceRate" }
+              example:
+                base: USD
+                quote: UAH
+                rate: "45.436"
+                date: "2026-10-31"
+        "400":
+          description: |
+            The pair is refused: a currency is missing or unsupported, or both are the same. The
+            screen cannot send such a pair, so only a direct call gets this answer (sad.md flow 8).
+          headers:
+            Cache-Control: { $ref: "#/components/headers/NoStore" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/InvalidPairError" }
+              example:
+                error:
+                  code: invalid_pair
+                  message: The currency pair is not supported.
+        "502":
+          description: |
+            No usable rate is available. The rate source failed, gave no answer within five seconds,
+            or sent an untrusted answer, and no stored answer can be used. The specific reason goes
+            only to the server console, and the screen shows its own unavailable message.
+          headers:
+            Cache-Control: { $ref: "#/components/headers/NoStore" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/RateUnavailableError" }
+              example:
+                error:
+                  code: rate_unavailable
+                  message: The rate is unavailable.
+
+components:
+  headers:
+    NoStore:
+      description: Stops the browser reusing a reply, so returning to a pair requests the rate again.
+      required: true
+      schema: { type: string, const: no-store }
+
+  schemas:
+    SupportedCurrency:
+      type: string
+      description: One of the currencies the app supports, not every currency the rate source publishes.
+      enum: [UAH, USD, EUR, GBP, PLN]
+
+    DailyReferenceRate:
+      type: object
+      description: |
+        The rate the rate source publishes for one currency pair. The browser validates this reply
+        and counts anything unexpected as the rate being unavailable.
+      required: [base, quote, rate, date]
+      additionalProperties: false
+      properties:
+        base:
+          $ref: "#/components/schemas/SupportedCurrency"
+          description: Equals the requested `base`.
+        quote:
+          $ref: "#/components/schemas/SupportedCurrency"
+          description: Equals the requested `quote`.
+        rate:
+          type: string
+          description: |
+            A plain positive decimal with no exponent form. It is a string so that the browser
+            never holds a rate as a number (feature ADR-0006).
+          pattern: "^(?:[1-9][0-9]*(?:\\.[0-9]+)?|0\\.[0-9]*[1-9][0-9]*)$"
+          example: "45.436"
+        date:
+          type: string
+          format: date
+          description: |
+            The rate date as the rate source states it, written YYYY-MM-DD. It is a real calendar
+            date, and its age never makes the rate unusable.
+          pattern: "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+          example: "2026-10-31"
+
+    ErrorEnvelope:
+      type: object
+      description: The shape of every failure. It never holds text from the rate source.
+      required: [error]
+      additionalProperties: false
+      properties:
+        error:
+          type: object
+          required: [code, message]
+          additionalProperties: false
+          properties:
+            code:
+              $ref: "#/components/schemas/ErrorCode"
+            message:
+              type: string
+              description: Fixed developer text. The screen maps `code` to its own Ukrainian text.
+
+    ErrorCode:
+      type: string
+      description: A stable value the screen maps to its state (feature ADR-0007).
+      enum: [invalid_pair, rate_unavailable]
+
+    InvalidPairError:
+      allOf:
+        - $ref: "#/components/schemas/ErrorEnvelope"
+        - type: object
+          properties:
+            error:
+              type: object
+              properties:
+                code: { const: invalid_pair }
+
+    RateUnavailableError:
+      allOf:
+        - $ref: "#/components/schemas/ErrorEnvelope"
+        - type: object
+          properties:
+            error:
+              type: object
+              properties:
+                code: { const: rate_unavailable }
