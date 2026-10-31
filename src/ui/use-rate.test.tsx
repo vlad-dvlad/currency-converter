@@ -1,6 +1,6 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { http, HttpResponse } from "msw";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import type { CurrencyPair } from "@/domain/currency";
 import { server } from "../../test/msw-server";
 import { useRate, type RateState } from "./use-rate";
@@ -113,6 +113,39 @@ describe("useRate", () => {
 
     await replies.release(0, failure());
     expect(result.current).toEqual({ status: "ready", rate: rateFor(EUR_UAH, "50.1") });
+  });
+
+  describe("when a reply arrives despite the abort", () => {
+    afterEach(() => vi.restoreAllMocks());
+
+    // Under msw an abort rejects at once, so only a fetch that ignores its signal reaches the guard.
+    function fetchIgnoringAbort() {
+      const replies: ((reply: Response) => void)[] = [];
+      vi.spyOn(globalThis, "fetch").mockImplementation(
+        () => new Promise<Response>((resolve) => replies.push(resolve)),
+      );
+      return replies;
+    }
+
+    it.each([
+      ["rate", () => HttpResponse.json(rateFor(USD_UAH))],
+      ["failure", failure],
+    ])("keeps the selected pair's rate when a late %s comes in", async (_name, lateReply) => {
+      const replies = fetchIgnoringAbort();
+      const { result, rerender } = renderRate(USD_UAH);
+      rerender({ pair: EUR_UAH });
+      await waitFor(() => expect(replies).toHaveLength(2));
+
+      await act(async () => replies[1](HttpResponse.json(rateFor(EUR_UAH, "50.1"))));
+      await waitFor(() => expect(result.current).toMatchObject({ status: "ready" }));
+
+      await act(async () => {
+        replies[0](lateReply());
+        await new Promise((resolve) => setTimeout(resolve, 20));
+      });
+
+      expect(result.current).toEqual({ status: "ready", rate: rateFor(EUR_UAH, "50.1") });
+    });
   });
 
   it("makes a new request on A to B to A, and the first rate for A does not reappear", async () => {
