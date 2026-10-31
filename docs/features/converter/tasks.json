@@ -1,0 +1,366 @@
+{
+  "slug": "converter",
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "Define supported currencies, the currency pair, the choice rule and shared rate types",
+      "layer": "domain",
+      "deps": [],
+      "acs": [
+        "AC-07",
+        "AC-08"
+      ],
+      "dod": "Unit tests in src/domain/currency.test.ts and src/domain/rate.test.ts pass for AC-07's list and default pair and AC-08's swap rule, with 100% branch coverage of both files.",
+      "files_hint": [
+        "src/domain/currency.ts",
+        "src/domain/currency.test.ts",
+        "src/domain/rate.ts",
+        "src/domain/rate.test.ts"
+      ],
+      "file": "docs/features/converter/tasks/t01-currencies-and-rate-types.md",
+      "status": "todo"
+    },
+    {
+      "id": "T2",
+      "title": "Parse typed amount text into empty, valid or rejected",
+      "layer": "domain",
+      "deps": [],
+      "acs": [
+        "AC-10",
+        "AC-11"
+      ],
+      "dod": "src/domain/amount.test.ts passes for every example in AC-10 and AC-11, with 100% branch coverage of amount.ts.",
+      "files_hint": [
+        "src/domain/amount.ts",
+        "src/domain/amount.test.ts"
+      ],
+      "file": "docs/features/converter/tasks/t02-amount-parsing.md",
+      "status": "todo"
+    },
+    {
+      "id": "T3",
+      "title": "Compute the reference result with exact arithmetic, half-up rounding and the below-minimum rule",
+      "layer": "domain",
+      "deps": [],
+      "acs": [
+        "AC-03",
+        "AC-04"
+      ],
+      "dod": "src/domain/conversion.test.ts passes for the AC-03 and AC-04 examples with literal expected values and 100% branch coverage of conversion.ts.",
+      "files_hint": [
+        "src/domain/conversion.ts",
+        "src/domain/conversion.test.ts"
+      ],
+      "file": "docs/features/converter/tasks/t03-exact-conversion.md",
+      "status": "todo"
+    },
+    {
+      "id": "T4",
+      "title": "Format the result, rate and rate date as displayed",
+      "layer": "domain",
+      "deps": [
+        "T1",
+        "T3"
+      ],
+      "acs": [
+        "AC-01",
+        "AC-04",
+        "AC-05",
+        "AC-06"
+      ],
+      "dod": "src/domain/format.test.ts passes for the literal strings in AC-01, AC-04, AC-05 and AC-06, with 100% branch coverage of format.ts.",
+      "files_hint": [
+        "src/domain/format.ts",
+        "src/domain/format.test.ts"
+      ],
+      "file": "docs/features/converter/tasks/t04-display-formatting.md",
+      "status": "todo"
+    },
+    {
+      "id": "T5",
+      "title": "Bind the documented run commands to the loopback address",
+      "layer": "wiring",
+      "deps": [],
+      "acs": [
+        "AC-15"
+      ],
+      "dod": "src/app/run-scripts.test.ts passes, and after npm start the port 3000 listener is bound to 127.0.0.1 only.",
+      "files_hint": [
+        "package.json",
+        "src/app/run-scripts.test.ts"
+      ],
+      "file": "docs/features/converter/tasks/t05-loopback-run-commands.md",
+      "status": "todo"
+    },
+    {
+      "id": "T6",
+      "title": "Add the format check and a 100% branch threshold on src/domain to CI",
+      "layer": "wiring",
+      "deps": [],
+      "acs": [
+        "AC-16"
+      ],
+      "dod": "npm run test:coverage fails on a temporary untested branch in src/domain and passes without it, and ci.yml runs build, test:coverage, lint, typecheck and format:check.",
+      "files_hint": [
+        "package.json",
+        "package-lock.json",
+        "vitest.config.mts",
+        "eslint.config.mjs",
+        ".github/workflows/ci.yml"
+      ],
+      "file": "docs/features/converter/tasks/t06-quality-gates-in-ci.md",
+      "status": "todo"
+    },
+    {
+      "id": "T7",
+      "title": "Validate the rate source's answer into a rate, rejecting every untrusted form",
+      "layer": "infra",
+      "deps": [
+        "T1"
+      ],
+      "acs": [
+        "AC-06",
+        "AC-12"
+      ],
+      "dod": "src/server/rate-source.test.ts passes for each untrusted form in AC-12 and for an old rate date passing through unchanged per AC-06.",
+      "files_hint": [
+        "src/server/rate-source.ts",
+        "src/server/rate-source.test.ts"
+      ],
+      "file": "docs/features/converter/tasks/t07-validate-rate-source-answer.md",
+      "status": "todo"
+    },
+    {
+      "id": "T8",
+      "title": "Request the rate with the time limit and cache options, and drop untrusted answers",
+      "layer": "infra",
+      "deps": [
+        "T7"
+      ],
+      "acs": [
+        "AC-09",
+        "AC-12"
+      ],
+      "dod": "src/server/rate-source.test.ts passes for the request URL, a declared refresh interval of at most 24 hours, the 5000 ms limit, each failure reason, and the drop on an untrusted answer.",
+      "files_hint": [
+        "src/server/rate-source.ts",
+        "src/server/rate-source.test.ts"
+      ],
+      "file": "docs/features/converter/tasks/t08-fetch-rate-with-cache-and-limit.md",
+      "status": "todo"
+    },
+    {
+      "id": "T9",
+      "title": "Answer GET /api/rates with the rate or the error envelope",
+      "layer": "ports",
+      "deps": [
+        "T1",
+        "T8"
+      ],
+      "acs": [
+        "AC-12"
+      ],
+      "dod": "src/app/api/rates/route.test.ts passes for 200, every 400 and 502 branch with exact bodies and no-store, and npm run build reports the route as dynamic.",
+      "files_hint": [
+        "src/app/api/rates/route.ts",
+        "src/app/api/rates/route.test.ts"
+      ],
+      "file": "docs/features/converter/tasks/t09-rates-route.md",
+      "status": "todo"
+    },
+    {
+      "id": "T10",
+      "title": "Request the rate from the browser and validate the reply",
+      "layer": "ui",
+      "deps": [
+        "T1"
+      ],
+      "acs": [
+        "AC-12"
+      ],
+      "dod": "src/ui/rates-api.test.ts passes for a valid reply and every unexpected reply in the edge table, each resolving as unavailable without rejecting.",
+      "files_hint": [
+        "src/ui/rates-api.ts",
+        "src/ui/rates-api.test.ts"
+      ],
+      "file": "docs/features/converter/tasks/t10-browser-rates-client.md",
+      "status": "todo"
+    },
+    {
+      "id": "T11",
+      "title": "Hold the rate state tied to the selected pair",
+      "layer": "ui",
+      "deps": [
+        "T10"
+      ],
+      "acs": [
+        "AC-13",
+        "AC-13b"
+      ],
+      "dod": "src/ui/use-rate.test.tsx passes for pending in the same render, out-of-order rate and failure replies, and A to B to A with a new request and no stale rate.",
+      "files_hint": [
+        "src/ui/use-rate.ts",
+        "src/ui/use-rate.test.tsx"
+      ],
+      "file": "docs/features/converter/tasks/t11-use-rate-hook.md",
+      "status": "todo"
+    },
+    {
+      "id": "T12",
+      "title": "Build the converter form with its fields, swap control and Ukrainian text",
+      "layer": "ui",
+      "deps": [
+        "T1"
+      ],
+      "acs": [
+        "AC-07",
+        "AC-08",
+        "AC-09",
+        "AC-14"
+      ],
+      "dod": "src/ui/converter.test.tsx passes for the opening state, both swap paths and a Tab walk through all four labelled controls, with all text in messages.ts.",
+      "files_hint": [
+        "src/ui/converter.tsx",
+        "src/ui/converter.test.tsx",
+        "src/ui/messages.ts",
+        "package.json",
+        "package-lock.json"
+      ],
+      "file": "docs/features/converter/tasks/t12-converter-form.md",
+      "status": "todo"
+    },
+    {
+      "id": "T13",
+      "title": "Show the rate, rate date, dash and unavailable message on the screen",
+      "layer": "ui",
+      "deps": [
+        "T4",
+        "T11",
+        "T12"
+      ],
+      "acs": [
+        "AC-05",
+        "AC-06",
+        "AC-09",
+        "AC-12",
+        "AC-13",
+        "AC-13b"
+      ],
+      "dod": "src/ui/converter.test.tsx passes for the dash, ready and unavailable states with literal strings, the new-direction request on swap, and no retry on typing.",
+      "files_hint": [
+        "src/ui/converter.tsx",
+        "src/ui/converter.test.tsx"
+      ],
+      "file": "docs/features/converter/tasks/t13-rate-states-on-screen.md",
+      "status": "todo"
+    },
+    {
+      "id": "T14",
+      "title": "Derive and show the reference result, the label and the amount message",
+      "layer": "ui",
+      "deps": [
+        "T2",
+        "T3",
+        "T4",
+        "T13"
+      ],
+      "acs": [
+        "AC-01",
+        "AC-02",
+        "AC-04",
+        "AC-05",
+        "AC-10",
+        "AC-11",
+        "AC-13c"
+      ],
+      "dod": "src/ui/converter.test.tsx passes for all nine AC-13c cells, the 4 543,60 UAH example with a non-breaking space, the below-minimum display, and one request while typing.",
+      "files_hint": [
+        "src/ui/converter.tsx",
+        "src/ui/converter.test.tsx"
+      ],
+      "file": "docs/features/converter/tasks/t14-amount-and-result-on-screen.md",
+      "status": "todo"
+    },
+    {
+      "id": "T15",
+      "title": "Render the converter from the static page and set the document language",
+      "layer": "wiring",
+      "deps": [
+        "T14"
+      ],
+      "acs": [
+        "AC-07"
+      ],
+      "dod": "src/app/page.test.tsx passes for the AC-07 opening state, and npm run build succeeds with no network and reports / as static.",
+      "files_hint": [
+        "src/app/page.tsx",
+        "src/app/page.test.tsx",
+        "src/app/layout.tsx"
+      ],
+      "file": "docs/features/converter/tasks/t15-compose-the-page.md",
+      "status": "todo"
+    },
+    {
+      "id": "T16",
+      "title": "Check the worked examples from typed text to displayed string",
+      "layer": "tests",
+      "deps": [
+        "T2",
+        "T3",
+        "T4"
+      ],
+      "acs": [
+        "AC-01",
+        "AC-03",
+        "AC-04"
+      ],
+      "dod": "src/domain/worked-examples.test.ts passes for the worked examples in AC-01, AC-03 and AC-04, with literal expected strings and no mocks.",
+      "files_hint": [
+        "src/domain/worked-examples.test.ts"
+      ],
+      "file": "docs/features/converter/tasks/t16-worked-examples.md",
+      "status": "todo"
+    },
+    {
+      "id": "T17",
+      "title": "Probe the stored-answer behaviour on the production build",
+      "layer": "tests",
+      "deps": [
+        "T9"
+      ],
+      "acs": [
+        "AC-12"
+      ],
+      "dod": "docs/features/converter/_audit/cache-probe.md records every scenario as matching on the production build, and git diff shows no leftover change in src/.",
+      "files_hint": [
+        "docs/features/converter/_audit/cache-probe.md"
+      ],
+      "file": "docs/features/converter/tasks/t17-cache-probe.md",
+      "status": "todo"
+    },
+    {
+      "id": "T18",
+      "title": "Update the project docs and write the owner's finish-line checklist",
+      "layer": "docs",
+      "deps": [
+        "T5",
+        "T6",
+        "T15",
+        "T16",
+        "T17"
+      ],
+      "acs": [
+        "AC-15",
+        "AC-16"
+      ],
+      "dod": "CLAUDE.md and docs/architecture-map.md state the loopback run commands and the five CI gates, and _audit/finish-line.md lists the four manual checks and three security items unticked.",
+      "files_hint": [
+        "CLAUDE.md",
+        "docs/architecture-map.md",
+        "docs/features/converter/_audit/finish-line.md"
+      ],
+      "file": "docs/features/converter/tasks/t18-docs-and-finish-line.md",
+      "status": "todo"
+    }
+  ]
+}
