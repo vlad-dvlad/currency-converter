@@ -4,10 +4,10 @@ import { formatRate, formatRateDate, formatResult } from "./format";
 
 describe("formatResult", () => {
   it.each([
-    ["4543.60", "4 543,60 UAH"],
+    ["4543.60", "4\u00A0543,60 UAH"],
     ["999.99", "999,99 UAH"],
-    ["1000", "1 000,00 UAH"],
-    ["1234567.89", "1 234 567,89 UAH"],
+    ["1000", "1\u00A0000,00 UAH"],
+    ["1234567.89", "1\u00A0234\u00A0567,89 UAH"],
     ["0", "0,00 UAH"],
     ["7.5", "7,50 UAH"],
   ])("writes %s as %j", (value, expected) => {

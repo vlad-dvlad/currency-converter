@@ -2,7 +2,7 @@ import type { Conversion } from "./conversion";
 import type { Currency } from "./currency";
 import type { DailyReferenceRate } from "./rate";
 
-const NON_BREAKING_SPACE = " ";
+const NON_BREAKING_SPACE = "\u00A0";
 
 /** The result as shown: a decimal comma and a non-breaking space between thousands. */
 export function formatResult(conversion: Conversion, quote: Currency): string {
