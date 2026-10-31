@@ -9,8 +9,8 @@ files_hint: ["docs/features/converter/_audit/cache-probe.md"]
 owner: "Vlad"
 estimate: "S"
 context_budget: "S"
-status: "todo"
-step: ""
+status: "done"
+step: "COMMIT"
 ---
 
 # T17 — Probe the stored-answer behaviour on the production build
