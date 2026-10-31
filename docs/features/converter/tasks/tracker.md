@@ -15,7 +15,7 @@
 | T5 | Bind the documented run commands to the loopback address | wiring | Vlad | S | — | done | COMMIT |
 | T6 | Add the format check and a 100% branch threshold on src/domain to CI | wiring | Vlad | S | — | done | COMMIT |
 | T7 | Validate the rate source's answer into a rate, rejecting every untrusted form | infra | Vlad | S | T1 | done | COMMIT |
-| T8 | Request the rate with the time limit and cache options, and drop untrusted answers | infra | Vlad | M | T7 | todo | — |
+| T8 | Request the rate with the time limit and cache options, and drop untrusted answers | infra | Vlad | M | T7 | done | COMMIT |
 | T9 | Answer GET /api/rates with the rate or the error envelope | ports | Vlad | S | T1, T8 | todo | — |
 | T10 | Request the rate from the browser and validate the reply | ui | Vlad | S | T1 | todo | — |
 | T11 | Hold the rate state tied to the selected pair | ui | Vlad | M | T10 | todo | — |

@@ -147,7 +147,7 @@
         "src/server/rate-source.test.ts"
       ],
       "file": "docs/features/converter/tasks/t08-fetch-rate-with-cache-and-limit.md",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "T9",
