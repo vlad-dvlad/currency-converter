@@ -18,7 +18,7 @@
         "src/domain/rate.test.ts"
       ],
       "file": "docs/features/converter/tasks/t01-currencies-and-rate-types.md",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "T2",

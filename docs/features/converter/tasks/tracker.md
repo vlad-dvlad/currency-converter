@@ -8,7 +8,7 @@
 
 | # | Task | Layer | Owner | Estimate | Blocked by | Status | Step |
 |---|---|---|---|---|---|---|---|
-| T1 | Define supported currencies, the currency pair, the choice rule and shared rate types | domain | Vlad | S | — | todo | — |
+| T1 | Define supported currencies, the currency pair, the choice rule and shared rate types | domain | Vlad | S | — | done | COMMIT |
 | T2 | Parse typed amount text into empty, valid or rejected | domain | Vlad | S | — | todo | — |
 | T3 | Compute the reference result with exact arithmetic, half-up rounding and the below-minimum rule | domain | Vlad | S | — | todo | — |
 | T4 | Format the result, rate and rate date as displayed | domain | Vlad | S | T1, T3 | todo | — |
