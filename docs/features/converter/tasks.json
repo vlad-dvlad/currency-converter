@@ -166,7 +166,7 @@
         "src/app/api/rates/route.test.ts"
       ],
       "file": "docs/features/converter/tasks/t09-rates-route.md",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "T10",

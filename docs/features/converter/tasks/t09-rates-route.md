@@ -9,8 +9,8 @@ files_hint: ["src/app/api/rates/route.ts", "src/app/api/rates/route.test.ts"]
 owner: "Vlad"
 estimate: "S"
 context_budget: "M"
-status: "todo"
-step: ""
+status: "done"
+step: "COMMIT"
 ---
 
 # T9 — Answer GET /api/rates with the rate or the error envelope
