@@ -52,7 +52,7 @@
         "src/domain/conversion.test.ts"
       ],
       "file": "docs/features/converter/tasks/t03-exact-conversion.md",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "T4",

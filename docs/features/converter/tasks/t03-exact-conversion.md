@@ -9,8 +9,8 @@ files_hint: ["src/domain/conversion.ts", "src/domain/conversion.test.ts"]
 owner: "Vlad"
 estimate: "S"
 context_budget: "M"
-status: "todo"
-step: ""
+status: "done"
+step: "COMMIT"
 ---
 
 # T3 — Compute the reference result with exact arithmetic, half-up rounding and the below-minimum rule

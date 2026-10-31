@@ -10,7 +10,7 @@
 |---|---|---|---|---|---|---|---|
 | T1 | Define supported currencies, the currency pair, the choice rule and shared rate types | domain | Vlad | S | — | done | COMMIT |
 | T2 | Parse typed amount text into empty, valid or rejected | domain | Vlad | S | — | done | COMMIT |
-| T3 | Compute the reference result with exact arithmetic, half-up rounding and the below-minimum rule | domain | Vlad | S | — | todo | — |
+| T3 | Compute the reference result with exact arithmetic, half-up rounding and the below-minimum rule | domain | Vlad | S | — | done | COMMIT |
 | T4 | Format the result, rate and rate date as displayed | domain | Vlad | S | T1, T3 | todo | — |
 | T5 | Bind the documented run commands to the loopback address | wiring | Vlad | S | — | todo | — |
 | T6 | Add the format check and a 100% branch threshold on src/domain to CI | wiring | Vlad | S | — | todo | — |
