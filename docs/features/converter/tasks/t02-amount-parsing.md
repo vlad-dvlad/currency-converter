@@ -9,8 +9,8 @@ files_hint: ["src/domain/amount.ts", "src/domain/amount.test.ts"]
 owner: "Vlad"
 estimate: "S"
 context_budget: "M"
-status: "todo"
-step: ""
+status: "done"
+step: "COMMIT"
 ---
 
 # T2 — Parse typed amount text into empty, valid or rejected
