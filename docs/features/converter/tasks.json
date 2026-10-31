@@ -279,7 +279,7 @@
         "src/ui/converter.test.tsx"
       ],
       "file": "docs/features/converter/tasks/t14-amount-and-result-on-screen.md",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "T15",

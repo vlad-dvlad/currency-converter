@@ -287,3 +287,179 @@ describe("Converter rate states", () => {
     expect(await screen.findByText("1 USD = 45,436 UAH")).toBeInTheDocument();
   });
 });
+
+describe("Converter result", () => {
+  const LABEL = "Довідкове значення: банк або обмінник може застосувати інший курс";
+  const AMOUNT_MESSAGE =
+    "Введіть суму цифрами: до 12 цифр перед комою і до 2 після, наприклад 1234,56";
+  const RATE = "1 USD = 45,436 UAH";
+  const DATE = "29.10.2026";
+  const RESULT = "4\u00A0543,60 UAH";
+  // The default normalizer turns a non-breaking space into an ordinary one, which would hide a regression.
+  const EXACT_TEXT = { normalizer: (text: string) => text };
+
+  function rateNeverArrives() {
+    server.use(http.get("*/api/rates", () => new Promise<Response>(() => {})));
+  }
+
+  function rateFails() {
+    server.use(http.get("*/api/rates", () => new HttpResponse(null, { status: 502 })));
+  }
+
+  async function settle() {
+    await act(() => new Promise((resolve) => setTimeout(resolve, 20)));
+  }
+
+  /** Every piece of the screen's answer, so a cell asserts what must be absent as well. */
+  function expectScreen(expected: {
+    dash?: boolean;
+    rate?: boolean;
+    unavailable?: boolean;
+    amountMessage?: boolean;
+    result?: boolean;
+  }) {
+    const shown = (text: string) => screen.queryByText(text, EXACT_TEXT) !== null;
+    expect({
+      dash: shown(DASH),
+      rate: shown(RATE) && shown(DATE),
+      unavailable: shown(UNAVAILABLE),
+      amountMessage: shown(AMOUNT_MESSAGE),
+      result: shown(RESULT) && shown(LABEL),
+      resultOrLabel: shown(RESULT) || shown(LABEL),
+    }).toEqual({
+      dash: false,
+      rate: false,
+      unavailable: false,
+      amountMessage: false,
+      result: false,
+      resultOrLabel: Boolean(expected.result),
+      ...expected,
+    });
+  }
+
+  const pending = { arrange: rateNeverArrives, rateCell: { dash: true } };
+  const ready = { arrange: () => {}, rateCell: { rate: true } };
+  const unavailable = { arrange: rateFails, rateCell: { unavailable: true } };
+
+  it.each([
+    ["empty", "not arrived", "", pending, {}],
+    ["empty", "ready", "", ready, {}],
+    ["empty", "unavailable", "", unavailable, {}],
+    ["valid", "not arrived", "100", pending, {}],
+    ["valid", "ready", "100", ready, { result: true }],
+    ["valid", "unavailable", "100", unavailable, {}],
+    ["rejected", "not arrived", "1,000", pending, { amountMessage: true }],
+    ["rejected", "ready", "1,000", ready, { amountMessage: true }],
+    ["rejected", "unavailable", "1,000", unavailable, { amountMessage: true }],
+  ])("AC-13c: amount %s, rate %s", async (_amount, _rate, text, rateCase, amountCell) => {
+    const user = userEvent.setup();
+    rateCase.arrange();
+    render(<Converter />);
+    await settle();
+
+    if (text) await user.type(amountField(), text);
+
+    expect(amountField().value).toBe(text);
+    expectScreen({ ...rateCase.rateCell, ...amountCell });
+  });
+
+  it("shows the worked example with a non-breaking space and no button to press", async () => {
+    const user = userEvent.setup();
+    render(<Converter />);
+    await screen.findByText(RATE);
+
+    await user.type(amountField(), "100");
+
+    expect(screen.getByText(RESULT, EXACT_TEXT)).toBeInTheDocument();
+    expect(screen.queryByText("4 543,60 UAH", EXACT_TEXT)).not.toBeInTheDocument();
+    expect(screen.getAllByRole("button")).toHaveLength(1);
+  });
+
+  it("makes one request while the amount changes, and keeps the same rate and date", async () => {
+    const user = userEvent.setup();
+    const queries = fakeRates({ "USD-UAH": "45.436" });
+    render(<Converter />);
+    await screen.findByText(RATE);
+
+    await user.type(amountField(), "100");
+    await user.clear(amountField());
+    await user.type(amountField(), "2,5");
+    await settle();
+
+    expect(screen.getByText("113,59 UAH")).toBeInTheDocument();
+    expect(screen.getByText(RATE)).toBeInTheDocument();
+    expect(screen.getByText(DATE)).toBeInTheDocument();
+    expect(queries).toEqual(["?base=USD&quote=UAH"]);
+  });
+
+  it("shows a small result as below the minimum", async () => {
+    const user = userEvent.setup();
+    render(<Converter />);
+    await screen.findByText(RATE);
+    await user.click(swapButton());
+    await screen.findByText("1 UAH = 0,022009 USD");
+
+    await user.type(amountField(), "0,10");
+
+    expect(screen.getByText("< 0,01 USD")).toBeInTheDocument();
+  });
+
+  it("shows zero as 0,00 with the rate, date and label", async () => {
+    const user = userEvent.setup();
+    render(<Converter />);
+    await screen.findByText(RATE);
+
+    await user.type(amountField(), "0");
+
+    expect(screen.getByText("0,00 UAH")).toBeInTheDocument();
+    expect(screen.getByText(LABEL)).toBeInTheDocument();
+    expect(screen.getByText(RATE)).toBeInTheDocument();
+  });
+
+  it.each([",", "."])("shows neither a result nor a message for a lone %s", async (text) => {
+    const user = userEvent.setup();
+    render(<Converter />);
+    await screen.findByText(RATE);
+
+    await user.type(amountField(), text);
+
+    expectScreen({ rate: true });
+  });
+
+  it("shows a dash and no result on swap, then the new result with the amount unchanged", async () => {
+    const user = userEvent.setup();
+    render(<Converter />);
+    await screen.findByText(RATE);
+    await user.type(amountField(), "100");
+
+    let release: (reply: Response) => void = () => {};
+    server.use(
+      http.get("*/api/rates", () => new Promise<Response>((resolve) => (release = resolve))),
+    );
+    await user.click(swapButton());
+    await settle();
+
+    expectScreen({ dash: true });
+    expect(amountField().value).toBe("100");
+
+    await act(async () => {
+      release(
+        HttpResponse.json({ base: "UAH", quote: "USD", rate: "0.022009", date: "2026-10-29" }),
+      );
+    });
+
+    expect(await screen.findByText("2,20 USD")).toBeInTheDocument();
+    expect(screen.getByText(LABEL)).toBeInTheDocument();
+    expect(amountField().value).toBe("100");
+  });
+
+  it("links a rejected amount's message to the field", async () => {
+    const user = userEvent.setup();
+    render(<Converter />);
+
+    await user.type(amountField(), "abc");
+
+    expect(amountField()).toHaveAttribute("aria-invalid", "true");
+    expect(amountField()).toHaveAccessibleDescription(AMOUNT_MESSAGE);
+  });
+});

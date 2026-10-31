@@ -1,6 +1,8 @@
 "use client";
 
 import { useId, useState } from "react";
+import { parseAmount } from "@/domain/amount";
+import { convert } from "@/domain/conversion";
 import {
   DEFAULT_PAIR,
   SUPPORTED_CURRENCIES,
@@ -10,7 +12,7 @@ import {
   type CurrencyPair,
   type PairField,
 } from "@/domain/currency";
-import { formatRate, formatRateDate } from "@/domain/format";
+import { formatRate, formatRateDate, formatResult } from "@/domain/format";
 import { messages } from "./messages";
 import { useRate, type RateState } from "./use-rate";
 
@@ -21,7 +23,16 @@ export function Converter() {
   const [amountText, setAmountText] = useState("");
   const [pair, setPair] = useState<CurrencyPair>(DEFAULT_PAIR);
   const amountId = useId();
+  const amountMessageId = useId();
   const rate = useRate(pair);
+
+  // Derived on each render and never stored, so typing can never cause a rate request.
+  const amount = parseAmount(amountText);
+  const rejected = amount.kind === "rejected";
+  const result =
+    amount.kind === "valid" && rate.status === "ready"
+      ? formatResult(convert(amount.value, rate.rate.rate), rate.rate.quote)
+      : null;
 
   const choose = (field: PairField) => (currency: Currency) =>
     setPair((current) => chooseCurrency(current, field, currency));
@@ -38,9 +49,12 @@ export function Converter() {
           inputMode="decimal"
           autoComplete="off"
           value={amountText}
+          aria-invalid={rejected}
+          aria-describedby={rejected ? amountMessageId : undefined}
           onChange={(event) => setAmountText(event.target.value)}
           className={CONTROL}
         />
+        {rejected && <p id={amountMessageId}>{messages.amountRejected}</p>}
       </div>
 
       <div className="flex flex-wrap items-end gap-3">
@@ -52,6 +66,12 @@ export function Converter() {
       </div>
 
       <div role="status" className="flex flex-col gap-1">
+        {result !== null && (
+          <>
+            <p className="text-2xl font-semibold">{result}</p>
+            <p>{messages.referenceLabel}</p>
+          </>
+        )}
         <RateLine state={rate} />
       </div>
     </div>
