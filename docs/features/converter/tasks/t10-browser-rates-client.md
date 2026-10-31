@@ -9,8 +9,8 @@ files_hint: ["src/ui/rates-api.ts", "src/ui/rates-api.test.ts"]
 owner: "Vlad"
 estimate: "S"
 context_budget: "M"
-status: "todo"
-step: ""
+status: "done"
+step: "COMMIT"
 ---
 
 # T10 — Request the rate from the browser and validate the reply

@@ -9,8 +9,8 @@ files_hint: ["src/server/rate-source.ts", "src/server/rate-source.test.ts"]
 owner: "Vlad"
 estimate: "M"
 context_budget: "M"
-status: "todo"
-step: ""
+status: "done"
+step: "COMMIT"
 ---
 
 # T8 — Request the rate with the time limit and cache options, and drop untrusted answers

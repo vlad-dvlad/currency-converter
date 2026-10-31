@@ -9,8 +9,8 @@ files_hint: ["src/domain/currency.ts", "src/domain/currency.test.ts", "src/domai
 owner: "Vlad"
 estimate: "S"
 context_budget: "M"
-status: "todo"
-step: ""
+status: "done"
+step: "COMMIT"
 ---
 
 # T1 — Define supported currencies, the currency pair, the choice rule and shared rate types

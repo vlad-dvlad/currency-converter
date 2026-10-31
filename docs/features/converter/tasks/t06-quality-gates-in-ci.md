@@ -9,8 +9,8 @@ files_hint: ["package.json", "package-lock.json", "vitest.config.mts", "eslint.c
 owner: "Vlad"
 estimate: "S"
 context_budget: "S"
-status: "todo"
-step: ""
+status: "done"
+step: "COMMIT"
 ---
 
 # T6 — Add the format check and a 100% branch threshold on src/domain to CI

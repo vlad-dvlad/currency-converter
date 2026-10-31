@@ -18,7 +18,7 @@
         "src/domain/rate.test.ts"
       ],
       "file": "docs/features/converter/tasks/t01-currencies-and-rate-types.md",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "T2",
@@ -35,7 +35,7 @@
         "src/domain/amount.test.ts"
       ],
       "file": "docs/features/converter/tasks/t02-amount-parsing.md",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "T3",
@@ -52,7 +52,7 @@
         "src/domain/conversion.test.ts"
       ],
       "file": "docs/features/converter/tasks/t03-exact-conversion.md",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "T4",
@@ -74,7 +74,7 @@
         "src/domain/format.test.ts"
       ],
       "file": "docs/features/converter/tasks/t04-display-formatting.md",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "T5",
@@ -90,7 +90,7 @@
         "src/app/run-scripts.test.ts"
       ],
       "file": "docs/features/converter/tasks/t05-loopback-run-commands.md",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "T6",
@@ -109,7 +109,7 @@
         ".github/workflows/ci.yml"
       ],
       "file": "docs/features/converter/tasks/t06-quality-gates-in-ci.md",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "T7",
@@ -128,7 +128,7 @@
         "src/server/rate-source.test.ts"
       ],
       "file": "docs/features/converter/tasks/t07-validate-rate-source-answer.md",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "T8",
@@ -147,7 +147,7 @@
         "src/server/rate-source.test.ts"
       ],
       "file": "docs/features/converter/tasks/t08-fetch-rate-with-cache-and-limit.md",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "T9",
@@ -166,7 +166,7 @@
         "src/app/api/rates/route.test.ts"
       ],
       "file": "docs/features/converter/tasks/t09-rates-route.md",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "T10",
@@ -184,7 +184,7 @@
         "src/ui/rates-api.test.ts"
       ],
       "file": "docs/features/converter/tasks/t10-browser-rates-client.md",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "T11",
@@ -203,7 +203,7 @@
         "src/ui/use-rate.test.tsx"
       ],
       "file": "docs/features/converter/tasks/t11-use-rate-hook.md",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "T12",
@@ -227,7 +227,7 @@
         "package-lock.json"
       ],
       "file": "docs/features/converter/tasks/t12-converter-form.md",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "T13",
@@ -252,7 +252,7 @@
         "src/ui/converter.test.tsx"
       ],
       "file": "docs/features/converter/tasks/t13-rate-states-on-screen.md",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "T14",
@@ -279,7 +279,7 @@
         "src/ui/converter.test.tsx"
       ],
       "file": "docs/features/converter/tasks/t14-amount-and-result-on-screen.md",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "T15",
@@ -298,7 +298,7 @@
         "src/app/layout.tsx"
       ],
       "file": "docs/features/converter/tasks/t15-compose-the-page.md",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "T16",
@@ -319,7 +319,7 @@
         "src/domain/worked-examples.test.ts"
       ],
       "file": "docs/features/converter/tasks/t16-worked-examples.md",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "T17",
@@ -336,7 +336,7 @@
         "docs/features/converter/_audit/cache-probe.md"
       ],
       "file": "docs/features/converter/tasks/t17-cache-probe.md",
-      "status": "todo"
+      "status": "done"
     },
     {
       "id": "T18",
@@ -360,7 +360,7 @@
         "docs/features/converter/_audit/finish-line.md"
       ],
       "file": "docs/features/converter/tasks/t18-docs-and-finish-line.md",
-      "status": "todo"
+      "status": "done"
     }
   ]
 }

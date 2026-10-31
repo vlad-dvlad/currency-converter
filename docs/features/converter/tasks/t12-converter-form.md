@@ -9,8 +9,8 @@ files_hint: ["src/ui/converter.tsx", "src/ui/converter.test.tsx", "src/ui/messag
 owner: "Vlad"
 estimate: "M"
 context_budget: "M"
-status: "todo"
-step: ""
+status: "done"
+step: "COMMIT"
 ---
 
 # T12 — Build the converter form with its fields, swap control and Ukrainian text

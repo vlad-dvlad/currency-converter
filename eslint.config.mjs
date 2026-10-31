@@ -7,5 +7,5 @@ export default defineConfig([
   ...nextCoreWebVitals,
   ...nextTypescript,
   prettier,
-  globalIgnores([".next/**", "next-env.d.ts"]),
+  globalIgnores([".next/**", "next-env.d.ts", "coverage/**"]),
 ]);

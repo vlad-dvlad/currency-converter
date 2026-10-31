@@ -4,14 +4,15 @@ A local, single-user currency converter: one Next.js project with a route handle
 
 ## Commands
 
-- `npm run dev` — dev server
-- `npm run build`, then `npm start` — production build and server
+- `npm run dev` — dev server, bound to `127.0.0.1`
+- `npm run build`, then `npm start` — production build and server, bound to `127.0.0.1`
 - `npm test` — Vitest, once (`npm run test:watch` to watch)
+- `npm run test:coverage` — Vitest with coverage; fails below 100% of branches in `src/domain/`
 - `npm run lint` — ESLint CLI with `eslint.config.mjs` (`next lint` no longer exists)
 - `npm run typecheck` — `tsc --noEmit`
 - `npm run format`, `npm run format:check` — Prettier
 
-CI (`.github/workflows/ci.yml`) runs build, test, lint and typecheck.
+CI (`.github/workflows/ci.yml`) runs five gates: build, `test:coverage`, lint, typecheck and `format:check`.
 
 ## Structure
 

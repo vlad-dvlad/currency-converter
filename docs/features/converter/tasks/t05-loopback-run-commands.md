@@ -9,8 +9,8 @@ files_hint: ["package.json", "src/app/run-scripts.test.ts"]
 owner: "Vlad"
 estimate: "S"
 context_budget: "S"
-status: "todo"
-step: ""
+status: "done"
+step: "COMMIT"
 ---
 
 # T5 — Bind the documented run commands to the loopback address

@@ -25,7 +25,7 @@ frontend: "next.js 16 + react 19 + tailwind css 4"
 - Frameworks: Next.js 16 (App Router), React 19, Tailwind CSS 4
 - Libraries: `big.js` (decimal arithmetic), `zod` (runtime validation of the rate source's responses)
 - Package manager: npm
-- Build / test / lint: `npm run build`, `npm test` (Vitest), `npm run lint` (ESLint 9), `npm run typecheck` (`tsc --noEmit`), Prettier for formatting
+- Build / test / lint: `npm run build`, `npm test` (Vitest), `npm run test:coverage`, `npm run lint` (ESLint 9), `npm run typecheck` (`tsc --noEmit`), Prettier for formatting
 - Version pins: TypeScript stays on 6.0 and ESLint on 9 — see Constraints
 
 ## C4 — system as it is
@@ -69,7 +69,7 @@ Each cites the ADR that fixes it; target code examples arrive with `/sdd:scaffol
 - **Tests:** Vitest, with Testing Library + jsdom for components and `msw` to fake the rate source; a test sits next to its source as `*.test.ts(x)`; tests never call the real API — [ADR-0001](./adr/0001-next-js-full-stack-typescript.md)
 - **Inter-module communication:** direct imports in-process; the browser reaches the server only through `/api/rates` — [ADR-0002](./adr/0002-layered-src-modules.md)
 - **UI / styling (if a frontend exists):** Tailwind CSS 4 utility classes; no second styling approach — [ADR-0001](./adr/0001-next-js-full-stack-typescript.md) (detail in §Frontend / UI foundation below)
-- **CI:** one GitHub Actions workflow runs build, test, lint and typecheck — [ADR-0001](./adr/0001-next-js-full-stack-typescript.md)
+- **CI:** one GitHub Actions workflow runs five gates: build, `test:coverage` (100% of branches in `src/domain/`), lint, typecheck and `format:check` — [ADR-0001](./adr/0001-next-js-full-stack-typescript.md)
 
 ## Datastores
 
@@ -101,10 +101,10 @@ No precedents exist yet; the first feature sets them.
 - **TypeScript pinned to 6.0 (`~6.0`).** `typescript-eslint` 8.72, which `eslint-config-next` 16.4 depends on, supports TypeScript `<6.1.0`, while npm's latest is 7.0. Lift the pin when `typescript-eslint` supports 7 (checked 2026-10-30).
 - **ESLint pinned to 9.** `eslint-plugin-react`, `eslint-plugin-import` and `eslint-plugin-jsx-a11y`, all pulled in by `eslint-config-next`, declare peer support only up to ESLint 9, while npm's latest is 10 (checked 2026-10-30).
 - **`next lint` does not exist in Next.js 16.** `npm run lint` calls the ESLint CLI with a flat `eslint.config.mjs`.
-- **Next.js `fetch` is uncached by default.** The rates request must set `next: { revalidate }` itself, or every page load reaches Frankfurter. The interval is decided in the feature's design.
-- **Frankfurter's v2 endpoint is required for UAH.** `GET https://api.frankfurter.dev/v2/rates` returned UAH on 2026-10-30; the v1 `latest` endpoint did not (`docs/idea-brief.md` §6). Frankfurter remains a proposal until specify or design confirms it; alternatives are in the same ledger.
-- **Single upstream source.** If it is down and nothing is cached, conversion cannot refresh (`docs/idea-brief.md` §6, risk 3). Behaviour in that case is an open question for specify.
-- **Local only.** The app needs a running Node process (`npm run dev`, or `npm run build` then `npm start`); public deployment is out of scope.
+- **Next.js `fetch` is uncached by default.** The rates request must set `next: { revalidate }` itself, or every page load reaches Frankfurter. The interval is one hour (`docs/features/converter/adr/0004-one-hour-fetch-cache-dropping-untrusted-answers.md`).
+- **Frankfurter's v2 endpoint is required for UAH.** `GET https://api.frankfurter.dev/v2/rates` returned UAH on 2026-10-30; the v1 `latest` endpoint did not (`docs/idea-brief.md` §6). Frankfurter is the confirmed rate source, with one request per pair (`docs/features/converter/adr/0003-frankfurter-v2-one-request-per-pair.md`).
+- **Single upstream source.** If it is down and nothing is cached, conversion cannot refresh (`docs/idea-brief.md` §6, risk 3). In that case the screen says the rate is unavailable and shows no result (`docs/features/converter/spec.md`, AC-12).
+- **Local only.** The app needs a running Node process (`npm run dev`, or `npm run build` then `npm start`), and both run commands bind to `127.0.0.1` (`docs/features/converter/adr/0005-bind-run-commands-to-loopback.md`); public deployment is out of scope.
 
 ## Reconciliation with the authored architecture doc
 

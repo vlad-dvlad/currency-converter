@@ -9,8 +9,8 @@ files_hint: ["src/domain/format.ts", "src/domain/format.test.ts"]
 owner: "Vlad"
 estimate: "S"
 context_budget: "M"
-status: "todo"
-step: ""
+status: "done"
+step: "COMMIT"
 ---
 
 # T4 — Format the result, rate and rate date as displayed
