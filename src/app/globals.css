@@ -1,1 +1,32 @@
 @import "tailwindcss";
+
+/* Semantic theme tokens. Light values here; dark values follow the system setting below. */
+@theme {
+  --color-bg: oklch(0.97 0.015 255);
+  --color-bg-accent: oklch(0.93 0.04 280);
+  --color-surface: oklch(1 0 0);
+  --color-border: oklch(0.9 0.01 260);
+  --color-border-strong: oklch(0.78 0.02 260);
+  --color-text: oklch(0.22 0.03 265);
+  --color-muted: oklch(0.5 0.025 265);
+  --color-accent: oklch(0.55 0.2 265);
+  --color-accent-soft: oklch(0.95 0.03 265);
+  --color-danger: oklch(0.55 0.2 25);
+  --shadow-card: 0 20px 25px -5px oklch(0 0 0 / 0.05), 0 8px 10px -6px oklch(0 0 0 / 0.05);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: oklch(0.17 0.02 265);
+    --color-bg-accent: oklch(0.22 0.05 285);
+    --color-surface: oklch(0.23 0.025 265);
+    --color-border: oklch(0.32 0.025 265);
+    --color-border-strong: oklch(0.45 0.03 265);
+    --color-text: oklch(0.95 0.01 265);
+    --color-muted: oklch(0.72 0.02 265);
+    --color-accent: oklch(0.72 0.15 265);
+    --color-accent-soft: oklch(0.3 0.06 265);
+    --color-danger: oklch(0.72 0.17 25);
+    --shadow-card: 0 20px 25px -5px oklch(0 0 0 / 0.5), 0 8px 10px -6px oklch(0 0 0 / 0.4);
+  }
+}

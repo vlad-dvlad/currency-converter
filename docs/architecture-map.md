@@ -79,14 +79,14 @@ Each cites the ADR that fixes it; target code examples arrive with `/sdd:scaffol
 
 ## Frontend / UI foundation
 
-Target; no component exists yet and no design system has been chosen. `/sdd:design-system` is the place to fix tokens and the component inventory.
+One screen exists: the converter card. No formal design system has been chosen; `/sdd:design-system` is the place to fix one if more screens appear.
 
 - **Component library / design system:** none yet; in-repo components in `src/ui/`
-- **Design tokens:** Tailwind CSS 4 theme in `src/app/globals.css` (target)
+- **Design tokens:** semantic colour tokens (`bg`, `surface`, `border`, `text`, `muted`, `accent`, `danger`, …) and a `card` shadow in the Tailwind CSS 4 `@theme` block of `src/app/globals.css`; dark values override them under `prefers-color-scheme: dark`, with no toggle and no stored state
 - **Styling approach:** Tailwind CSS 4 utility classes — [ADR-0001](./adr/0001-next-js-full-stack-typescript.md)
 - **Shared primitives:** none yet; add to `src/ui/` when a second use appears
 - **State / data-fetching:** React state and `fetch` to `/api/rates` from a client component; no store or server-cache library, one screen does not need them
-- **Closest UI precedent:** none yet; the converter screen becomes the first
+- **Closest UI precedent:** `src/ui/converter.tsx`, a centred card on a gradient, rounded controls sharing one `CONTROL` class, and inline `aria-hidden` SVG icons (no icon library)
 
 ## Where things live / closest precedents
 
